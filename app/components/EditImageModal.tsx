@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Cropper, { type MediaSize } from "react-easy-crop";
-import { getCroppedImage, type PixelCrop } from "../lib/cropImage";
+import { getContainedLogoImage, getCroppedImage, type PixelCrop } from "../lib/cropImage";
 import {
   getFitZoomInCropArea,
   getInitialLogoCropZoom,
@@ -93,6 +93,8 @@ export function EditImageModal({ imageSrc, onClose, onConfirm }: EditImageModalP
   const mediaSizeRef = useRef<LogoMediaSize | null>(null);
   const cropSizeRef = useRef<{ width: number; height: number } | null>(null);
   const didInitRef = useRef(false);
+  const initialZoomRef = useRef<number | null>(null);
+  const initialCropRef = useRef<{ x: number; y: number } | null>(null);
 
   const applyFitZoom = useCallback(() => {
     const mediaSize = mediaSizeRef.current;
@@ -107,28 +109,30 @@ export function EditImageModal({ imageSrc, onClose, onConfirm }: EditImageModalP
     setMaxZoom(Math.max(3, fitZoom * 4));
     setZoom(initialZoom);
     setCrop({ x: 0, y: 0 });
+    initialZoomRef.current = initialZoom;
+    initialCropRef.current = { x: 0, y: 0 };
     setIsCropperReady(true);
   }, []);
-
-  useEffect(() => {
-    mediaSizeRef.current = null;
-    cropSizeRef.current = null;
-    didInitRef.current = false;
-    setCrop({ x: 0, y: 0 });
-    setZoom(1);
-    setMinZoom(0.1);
-    setMaxZoom(3);
-    setRotation(0);
-    setCroppedAreaPixels(null);
-    setIsCropperReady(false);
-  }, [imageSrc]);
 
   const handleConfirm = async () => {
     if (!croppedAreaPixels) return;
 
     setIsSaving(true);
     try {
-      const croppedImage = await getCroppedImage(imageSrc, croppedAreaPixels, rotation);
+      const initialZoom = initialZoomRef.current;
+      const initialCrop = initialCropRef.current;
+
+      const isDefaultFit =
+        initialZoom !== null &&
+        initialCrop !== null &&
+        Math.abs(zoom - initialZoom) < 0.02 &&
+        Math.abs(crop.x - initialCrop.x) < 0.5 &&
+        Math.abs(crop.y - initialCrop.y) < 0.5 &&
+        Math.abs(rotation) < 0.5;
+
+      const croppedImage = isDefaultFit
+        ? await getContainedLogoImage(imageSrc, rotation)
+        : await getCroppedImage(imageSrc, croppedAreaPixels, rotation);
       onConfirm(croppedImage);
     } finally {
       setIsSaving(false);
