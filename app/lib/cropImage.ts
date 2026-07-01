@@ -162,10 +162,10 @@ async function loadCanvasSource(src: string): Promise<LoadedCanvasSource> {
 
     if (typeof createImageBitmap === "function") {
       try {
-        const bitmap = await createImageBitmap(blob, {
-          // @ts-expect-error: imageOrientation is still not in some TS DOM libs
-          imageOrientation: "from-image",
-        });
+        const bitmap = await createImageBitmap(
+          blob,
+          { imageOrientation: "from-image" } as ImageBitmapOptions,
+        );
         return {
           source: bitmap,
           width: bitmap.width,
