@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f5f7;
+  --foreground: #1f2937;
+  --providhy-teal: #2aab9b;
+  --providhy-teal-dark: #238f82;
+  --providhy-teal-light: #e6f5f3;
+  --providhy-teal-muted: #5bb8ad;
+  --banner-purple: #ebe4f7;
+  --banner-purple-text: #5b4b8a;
+  --border-color: #e5e7eb;
+  --text-muted: #6b7280;
+  --text-label: #9ca3af;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-providhy-teal: var(--providhy-teal);
+  --color-providhy-teal-dark: var(--providhy-teal-dark);
+  --color-providhy-teal-light: var(--providhy-teal-light);
+  --color-providhy-teal-muted: var(--providhy-teal-muted);
+  --color-banner-purple: var(--banner-purple);
+  --color-banner-purple-text: var(--banner-purple-text);
+  --color-border: var(--border-color);
+  --color-text-muted: var(--text-muted);
+  --color-text-label: var(--text-label);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.crop-slider {
+  height: 20px;
+}
+
+.crop-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid var(--providhy-teal);
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+}
+
+.crop-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid var(--providhy-teal);
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+}
